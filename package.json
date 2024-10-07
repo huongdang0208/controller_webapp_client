@@ -9,18 +9,35 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.11.8",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.2",
+    "@mui/material": "^6.1.2",
+    "@mui/x-charts": "^7.19.0",
+    "@mui/x-data-grid": "^7.19.0",
+    "@mui/x-data-grid-pro": "^7.19.0",
+    "@mui/x-date-pickers": "^7.19.0",
+    "@mui/x-date-pickers-pro": "^7.19.0",
+    "@mui/x-tree-view": "^7.19.0",
+    "apollo-server-micro": "^3.13.0",
+    "dayjs": "^1.11.13",
+    "graphql": "^16.9.0",
+    "graphql-tag": "^2.12.6",
+    "next": "14.2.12",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.12"
+    "react-router-dom": "^6.26.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.12",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.12"
+    "typescript": "^5"
   }
 }
