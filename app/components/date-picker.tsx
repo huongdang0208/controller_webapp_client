@@ -53,7 +53,7 @@ function ButtonField(props: ButtonFieldProps) {
 
 export default function CustomDatePicker() {
   const [value, setValue] = React.useState<Dayjs | null>(dayjs('2023-04-17'));
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState<boolean>(false);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -63,7 +63,10 @@ export default function CustomDatePicker() {
         onChange={(newValue) => setValue(newValue)}
         slots={{ field: ButtonField }}
         slotProps={{
-          field: { setOpen } as any,
+          field: (fieldProps) => ({
+            ...fieldProps,
+            setOpen,
+            }),
           nextIconButton: { size: 'small' },
           previousIconButton: { size: 'small' },
         }}

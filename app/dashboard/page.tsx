@@ -5,7 +5,7 @@ import type {} from '@mui/x-date-pickers/themeAugmentation';
 // import type {} from '@mui/x-charts/themeAugmentation';
 import type {} from '@mui/x-data-grid/themeAugmentation';
 import type {} from '@mui/x-tree-view/themeAugmentation';
-import { alpha } from '@mui/material/styles';
+import { Theme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -28,9 +28,9 @@ const xThemeComponents = {
   // ...treeViewCustomizations,
 };
 
-export default function Dashboard(props: { disableCustomTheme?: boolean }) {
+export default function Dashboard() {
   return (
-    <AppTheme {...props} themeComponents={xThemeComponents}>
+    <AppTheme themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: 'flex' }}>
         <SideMenu />
@@ -38,11 +38,9 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
         {/* Main content */}
         <Box
           component="main"
-          sx={(theme: any) => ({
+          sx={(theme: Theme) => ({
             flexGrow: 1,
-            backgroundColor: theme
-              ? `rgba(${theme.palette.background.default} / 1)`
-              : alpha(theme.palette.background.default, 1),
+            backgroundColor: `rgba(${theme.palette.background.default} / 1)`,
             overflow: 'auto',
           })}
         >
