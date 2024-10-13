@@ -1,36 +1,14 @@
-import { SignupFormSchema, FormState } from '@/app/lib/definitions'
- 
-export async function signup(state: FormState, formData: FormData) {
-  // Validate form fields
-  const validatedFields = SignupFormSchema.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    password: formData.get('password'),
-  })
- 
-  // If any form fields are invalid, return early
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    }
-  }
- 
-  // Call the provider or db to create a user...
-}
+import { jwtDecode } from "jwt-decode";
 
-export async function signin(state: FormState, formData: FormData) {
-  // Validate form fields
-  const validatedFields = SignupFormSchema.safeParse({
-    name: formData.get('name'),
-    password: formData.get('password'),
-  })
- 
-  // If any form fields are invalid, return early
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    }
-  }
- 
-  // Call the provider or db to create a user...
-}
+export const setTokens = (accessToken: string, refreshToken: string) => {
+  localStorage.setItem("accessToken", accessToken);
+  localStorage.setItem("refreshToken", refreshToken);
+};
+
+export const getAccessToken = () => localStorage.getItem("accessToken");
+export const getRefreshToken = () => localStorage.getItem("refreshToken");
+
+export const isTokenExpired = (token: string) => {
+  const decoded: any = jwtDecode(token);
+  return decoded.exp * 1000 < Date.now();
+};

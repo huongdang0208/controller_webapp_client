@@ -16,7 +16,7 @@ export default function Copyright() {
     >
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Sitemark
+        Harmony
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}

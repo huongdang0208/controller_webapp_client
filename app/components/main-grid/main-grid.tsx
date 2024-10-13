@@ -60,7 +60,7 @@ export default function MainGrid() {
       >
         {data.map((card, index) => (
           <Grid key={index} size={{ xs: 12, sm: 6, lg: 3 }}>
-            <StatCard {...card} />
+            {/* <StatCard {...card} /> */}
           </Grid>
         ))}
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
