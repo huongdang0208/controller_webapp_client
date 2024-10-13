@@ -1,6 +1,5 @@
 "use client";
-
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormState } from "react-dom";
 import { useRouter } from 'next/navigation'
 import { useMutation } from "@apollo/client";
 import { SIGNUP_MUTATION } from "@/app/api/auth";
@@ -10,9 +9,9 @@ import { Snackbar } from "@mui/material";
 import { useState } from "react";
 
 export function SignupForm() {
-  const [register, { data, error, loading }] = useMutation(SIGNUP_MUTATION);
+  const [register, { loading }] = useMutation(SIGNUP_MUTATION);
   const router = useRouter();
-  const [noti, setNoti] = useState<String>();
+  const [noti, setNoti] = useState<string>();
 
   const signup = async (state: FormState, formData: FormData) => {
     // Validate form fields
@@ -29,7 +28,7 @@ export function SignupForm() {
       };
     } else {
       try {
-        const res = await register({
+        await register({
           variables: {
             params: {
               email: validatedFields?.data?.email,

@@ -1,3 +1,4 @@
+'use client'; 
 import { SignupForm } from "@/app/components/auth/signup-form";
 import styles from "./style.module.css";
 

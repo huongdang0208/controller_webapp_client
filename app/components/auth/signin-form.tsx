@@ -1,6 +1,5 @@
 "use client";
-
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormState } from "react-dom";
 import styles from "./style.module.css";
 import { SigninFormState, SigninFormSchema } from "@/app/lib/definitions";
 import { useMutation } from "@apollo/client";
@@ -14,8 +13,8 @@ import { setTokens, setUser } from "@/app/lib/redux/auth-slice";
 export function SigninForm() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [login, { data, error, loading }] = useMutation(SIGNIN_MUTATION);
-  const [noti, setNoti] = useState<String>();
+  const [login, { loading }] = useMutation(SIGNIN_MUTATION);
+  const [noti, setNoti] = useState<string>();
 
   const signin = async (state: SigninFormState, formData: FormData) => {
     const validatedFields = SigninFormSchema.safeParse({
@@ -120,7 +119,6 @@ export function SigninForm() {
 }
 
 function SubmitButton({ loading }: { loading: boolean }) {
-  const { pending } = useFormStatus();
 
   return (
     <button disabled={loading} type="submit" className={styles.submitButton}>

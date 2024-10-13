@@ -1,6 +1,8 @@
+import { getTokenExpirationDate } from "@/app/utils/auth";
 import { User } from "@/app/utils/types/user";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { setCookie } from "cookies-next";
 
 export interface AuthState {
   accessToken: string | null;
@@ -27,6 +29,19 @@ export const authSlice = createSlice({
     },
     setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
+    },
+    setCookieTokens: (state) => {
+      const exp = getTokenExpirationDate(state.accessToken || "");
+      setCookie(
+        "harmonyCookie",
+        JSON.stringify({
+          accessToken: state.accessToken,
+          refreshToken: state.refreshToken,
+        }),
+        {
+          expires: new Date((exp || 1) * 1000), // 1 week
+        },
+      );
     },
     clearAuth: (state) => {
       state.accessToken = null;

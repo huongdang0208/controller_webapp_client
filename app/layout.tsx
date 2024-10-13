@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
+"use client";
+// import { metadata } from "./metadata";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ApolloClientProvider } from "./lib/apollo-client/providers";
+import ReduxProvider from "./lib/redux/redux-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -14,11 +16,6 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-export const metadata: Metadata = {
-  title: "Controlling Hub",
-  description: "Remote controlling your devices in hub",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,10 +23,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <title>{'Harmony Hub'}</title>
+        <meta name="description" content={'Remote controlling hub'} />
+        {/* Add other metadata tags here */}
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ApolloClientProvider>{children}</ApolloClientProvider>
+        <ReduxProvider>
+          <ApolloClientProvider>{children}</ApolloClientProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

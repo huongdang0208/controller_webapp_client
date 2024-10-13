@@ -10,7 +10,7 @@ import Copyright from './copy-rights';
 // import HighlightedCard from './HighlightedCard';
 // import PageViewsBarChart from './PageViewsBarChart';
 // import SessionsChart from './SessionsChart';
-import StatCard, { StatCardProps } from './stat-card';
+import { StatCardProps } from './stat-card';
 
 const data: StatCardProps[] = [
   {
