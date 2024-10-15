@@ -2,7 +2,7 @@
 import { useFormState } from "react-dom";
 import { useRouter } from 'next/navigation'
 import { useMutation } from "@apollo/client";
-import { SIGNUP_MUTATION } from "@/app/api/auth";
+import { SIGNUP_MUTATION } from "@/app/api/auth.api";
 import { SignupFormSchema, FormState } from "@/app/lib/definitions";
 import styles from "./style.module.css";
 import { Snackbar } from "@mui/material";

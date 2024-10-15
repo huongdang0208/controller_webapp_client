@@ -1,11 +1,22 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { persistReducer} from "redux-persist";
+import storage from "redux-persist/lib/storage";
 import { useDispatch, TypedUseSelectorHook, useSelector } from "react-redux";
 import { authReducer } from "./auth-slice";
 
+// Add redux-persist to persist the auth state, after reload page, state doesn't lose changes
+const authPersistConfig = {
+  key: "auth",
+  storage,
+  whitelist: ["accessToken", "refreshToken", "user"],
+};
+
+const rootReducer = combineReducers({
+  auth: persistReducer(authPersistConfig, authReducer),
+})
+
 export const store = configureStore({
-  reducer: {
-    auth: authReducer,
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),
 });

@@ -3,12 +3,12 @@ import { useFormState } from "react-dom";
 import styles from "./style.module.css";
 import { SigninFormState, SigninFormSchema } from "@/app/lib/definitions";
 import { useMutation } from "@apollo/client";
-import { SIGNIN_MUTATION } from "@/app/api/auth";
+import { SIGNIN_MUTATION } from "@/app/api/auth.api";
 import { useState } from "react";
 import { Snackbar } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/app/lib/redux/store";
-import { setTokens, setUser } from "@/app/lib/redux/auth-slice";
+import { setTokens, setUser, setCookieTokens } from "@/app/lib/redux/auth-slice";
 
 export function SigninForm() {
   const router = useRouter();
@@ -52,8 +52,9 @@ export function SigninForm() {
           })
         );
         // save to local storage
-        localStorage.setItem("accessToken", res.data.login.node.accessToken);
-        localStorage.setItem("refreshToken", res.data.login.node.refreshToken);
+        dispatch(setCookieTokens());
+      } else {
+        setNoti("Login failed: No data returned");
       }
       setTimeout(() => {
         router.push("/dashboard");

@@ -47,6 +47,7 @@ export const REFRESH_TOKEN_MUTATION = gql`
         username
         id
         email
+        hub_license_key
         modify_date
         created_date
       }

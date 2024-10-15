@@ -1,5 +1,5 @@
 import { getTokenExpirationDate } from "@/app/utils/auth";
-import { User } from "@/app/utils/types/user";
+import { User } from "@/app/utils/interfaces/user.interface";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { setCookie } from "cookies-next";
@@ -43,6 +43,7 @@ export const authSlice = createSlice({
         },
       );
     },
+
     clearAuth: (state) => {
       state.accessToken = null;
       state.refreshToken = null;
@@ -51,5 +52,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setTokens, setUser, clearAuth } = authSlice.actions;
+export const { setTokens, setUser, clearAuth, setCookieTokens } = authSlice.actions;
 export const authReducer = authSlice.reducer;
