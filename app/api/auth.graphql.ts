@@ -8,6 +8,7 @@ export const SIGNUP_MUTATION = gql`
           created_date
           email
           id
+          hub_license_key
           modify_date
           username
         }
@@ -26,6 +27,7 @@ export const SIGNIN_MUTATION = gql`
           created_date
           email
           id
+          hub_license_key
           modify_date
           username
         }
@@ -38,20 +40,20 @@ export const SIGNIN_MUTATION = gql`
 
 export const REFRESH_TOKEN_MUTATION = gql`
   mutation Refresh_token($params: RefreshTokenInput!) {
-  refresh_token(params: $params) {
-    message
-    node {
-      refreshToken
-      accessToken
-      user {
-        username
-        id
-        email
-        hub_license_key
-        modify_date
-        created_date
+    refresh_token(params: $params) {
+      message
+      node {
+        refreshToken
+        accessToken
+        user {
+          username
+          id
+          email
+          hub_license_key
+          modify_date
+          created_date
+        }
       }
     }
   }
-}
 `;

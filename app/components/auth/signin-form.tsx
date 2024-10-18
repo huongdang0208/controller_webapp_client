@@ -3,7 +3,7 @@ import { useFormState } from "react-dom";
 import styles from "./style.module.css";
 import { SigninFormState, SigninFormSchema } from "@/app/lib/definitions";
 import { useMutation } from "@apollo/client";
-import { SIGNIN_MUTATION } from "@/app/api/auth.api";
+import { SIGNIN_MUTATION } from "@/app/api/auth.graphql";
 import { useState } from "react";
 import { Snackbar } from "@mui/material";
 import { useRouter } from "next/navigation";

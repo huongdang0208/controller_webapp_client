@@ -6,6 +6,8 @@ export const CREATE_DEVICE_MUTATION = gql`
       created_at
       current_state
       device_name
+      protocol
+      pin
       id
       userID
     }
@@ -23,6 +25,7 @@ export const ALL_DEVICES_QUERY = gql`
         created_at
         updated_at
         userID
+        pin
       }
     }
   }
@@ -39,6 +42,7 @@ export const CREATE_MANY_DEVICES_MUTATION = gql`
         current_state
         created_at
         updated_at
+        pin
       }
     }
   }
@@ -54,6 +58,7 @@ export const UPDATE_DEVICE_MUTATION = gql`
       protocol
       updated_at
       userID
+      pin
     }
   }
 `;

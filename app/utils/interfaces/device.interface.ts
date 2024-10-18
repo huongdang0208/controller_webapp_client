@@ -7,6 +7,7 @@ export interface Device {
     updated_date: string;
     id_address: string;
     protocol: string;
+    pin: number;
 }
 
 export interface DeviceQueryInput {
@@ -14,4 +15,5 @@ export interface DeviceQueryInput {
     device_name: string;
     current_state: number;
     protocol: string;
+    pin: number;
 }

@@ -1,8 +1,8 @@
 "use client";
 import { useFormState } from "react-dom";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client";
-import { SIGNUP_MUTATION } from "@/app/api/auth.api";
+import { SIGNUP_MUTATION } from "@/app/api/auth.graphql";
 import { SignupFormSchema, FormState } from "@/app/lib/definitions";
 import styles from "./style.module.css";
 import { Snackbar } from "@mui/material";
@@ -19,6 +19,7 @@ export function SignupForm() {
       name: formData.get("name"),
       email: formData.get("email"),
       password: formData.get("password"),
+      license: formData.get("license"),
     });
 
     // If any form fields are invalid, return early
@@ -34,15 +35,18 @@ export function SignupForm() {
               email: validatedFields?.data?.email,
               password: validatedFields?.data?.password,
               username: validatedFields?.data?.name,
+              hub_license_key: validatedFields?.data?.license,
             },
           },
         });
         // console.log(data, "error: ", error);
         // console.log("res: ", res);
-        setNoti("User created successfully. You will be redirected to the login page.");
+        setNoti(
+          "User created successfully. You will be redirected to the login page."
+        );
         setTimeout(() => {
           router.push("/sign-in");
-        }, 2000)
+        }, 2000);
       } catch (error) {
         setNoti(`Registration failed: ${error}`);
         console.error(error);
@@ -87,6 +91,21 @@ export function SignupForm() {
         </div>
 
         <div className={styles.formGroup}>
+          <label htmlFor="license" className={styles.label}>
+            Hub License
+          </label>
+          <input
+            id="license"
+            name="License"
+            placeholder="Hub License"
+            className={styles.input}
+          />
+          {state?.errors?.email && (
+            <p className={styles.error}>{state.errors.email}</p>
+          )}
+        </div>
+
+        <div className={styles.formGroup}>
           <label htmlFor="password" className={styles.label}>
             Password
           </label>
@@ -114,7 +133,12 @@ export function SignupForm() {
         open={noti ? true : false}
         autoHideDuration={6000}
         message={noti}
-        color={noti == "User created successfully. You will be redirected to the login page." ? "success" : "error"}
+        color={
+          noti ==
+          "User created successfully. You will be redirected to the login page."
+            ? "success"
+            : "error"
+        }
       />
     </>
   );

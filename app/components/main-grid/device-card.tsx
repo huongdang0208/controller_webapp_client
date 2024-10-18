@@ -1,4 +1,5 @@
 import * as React from "react";
+import mqtt from "mqtt";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Chip from "@mui/material/Chip";
@@ -7,34 +8,62 @@ import Typography from "@mui/material/Typography";
 import { Device } from "@/app/utils/interfaces/device.interface";
 import { Switch } from "@mui/material";
 import { useMutation } from "@apollo/client";
-import { UPDATE_DEVICE_MUTATION } from "@/app/api/device.api";
+import { UPDATE_DEVICE_MUTATION } from "@/app/api/device.graphql";
 import Notification from "../notification/notification";
 
-export default function DeviceCard({ device }: { device: Device }) {
-  const [updateDeviceMutation, { error }] = useMutation(
-    UPDATE_DEVICE_MUTATION
-  );
+export default function DeviceCard({
+  device,
+  mqttClient,
+}: {
+  device: Device;
+  mqttClient: mqtt.MqttClient | null;
+}) {
+  const [updateDeviceMutation, { error }] = useMutation(UPDATE_DEVICE_MUTATION);
   const [checked, setChecked] = React.useState(device.current_state == 1);
-  const [status, setStatus] = React.useState<string>();
+  const [noti, setNoti] = React.useState<string>();
+
+  // Update the checked state when the device prop changes
+  React.useEffect(() => {
+    setChecked(device.current_state == 1);
+  }, [device]);
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
     try {
+      if (device?.protocol === "MQTT") {
+        const topic = `hub/switches`;
+        const message = `${checked ? "turn off" : "turn on"} - [state: ${
+          checked ? 0 : 1
+        }
+        id: ${device.id}
+        name: "${device.device_name}"
+        ]`;
+        mqttClient?.publish(topic, message);
+      } else {
+        const topic = `hub/lights`;
+        const message = `${checked ? "turn off" : "turn on"} - [state: ${
+          checked ? 0 : 1
+        }
+        id: ${device.id}
+        name: "${device.device_name}"
+        ]`;
+        mqttClient?.publish(topic, message);
+      }
       const res = await updateDeviceMutation({
         variables: {
           input: {
             id: device.id,
-            current_state: checked ? 1 : 0,
+            current_state: event.target.checked ? 1 : 0,
           },
         },
       });
       if (res.data) {
-        setStatus("Update successful!");
+        setNoti("Update successful!");
       } else {
-        setStatus("Update failed!" + (error?.message || ""));
+        setNoti("Update failed!" + (error?.message || ""));
       }
     } catch (error) {
-      setStatus("Update failed!" + error);
+      setNoti("Update failed!" + error);
     }
   };
 
@@ -68,12 +97,11 @@ export default function DeviceCard({ device }: { device: Device }) {
               inputProps={{ "aria-label": "controlled" }}
             />
           </Stack>
-          {/* <Box sx={{ width: "100%", height: 50 }}></Box> */}
           <Notification
-            isOpen={status ? true : false}
-            msg={status || ""}
+            isOpen={noti ? true : false}
+            msg={noti || ""}
             duration={200}
-            status={status == "Update successful!" ? "success" : "error"}
+            status={noti == "Update successful!" ? "success" : "error"}
           />
         </Stack>
       </CardContent>
