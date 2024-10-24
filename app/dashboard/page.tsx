@@ -126,32 +126,34 @@ export default function Dashboard() {
     // Use a regular expression to find the id
     const idMatch = dataPart.match(/id:\s*(\d+)/);
     const id = idMatch ? parseInt(idMatch[1], 10) : null;
-    try {
-      const res = await updateDeviceMutation({
-        variables: {
-          input: {
-            id,
-            current_state: action === "turn on" ? 1 : 0,
-          },
-        },
-      });
-      if (res.data) {
-        setListDevices((prev) => {
-          const updatedDevices = prev.map((device) =>
-            device.id === id
-              ? { ...device, current_state: action === "turn on" ? 1 : 0 }
-              : device
-          );
-          return [...updatedDevices]; // Ensure a new array reference
-        });
-        refetch({
-          filter: {
-            userID: authState.user?.id,
+    if (id) {
+      try {
+        const res = await updateDeviceMutation({
+          variables: {
+            input: {
+              id,
+              current_state: action === "turn on" ? 1 : 0,
+            },
           },
         });
+        if (res.data) {
+          setListDevices((prev) => {
+            const updatedDevices = prev.map((device) =>
+              device.id === id
+                ? { ...device, current_state: action === "turn on" ? 1 : 0 }
+                : device
+            );
+            return [...updatedDevices]; // Ensure a new array reference
+          });
+          refetch({
+            filter: {
+              userID: authState.user?.id,
+            },
+          });
+        }
+      } catch (error) {
+        throw new Error(String(error));
       }
-    } catch (error) {
-      throw new Error(String(error));
     }
   };
 
@@ -215,7 +217,7 @@ export default function Dashboard() {
             }}
           >
             <Header />
-            <MainGrid listDevices={listDevices} mqttClient={client} />
+            <MainGrid listDevices={listDevices} setListDevices={setListDevices} mqttClient={client} />
           </Stack>
         </Box>
       </Box>

@@ -1,19 +1,5 @@
 import { gql } from "@apollo/client";
 
-export const CREATE_DEVICE_MUTATION = gql`
-  mutation Create_device($input: CreateDeviceInput!) {
-    create_device(input: $input) {
-      created_at
-      current_state
-      device_name
-      protocol
-      pin
-      id
-      userID
-    }
-  }
-`;
-
 export const ALL_DEVICES_QUERY = gql`
   query All_devices($filter: DeviceQueryInput) {
     all_devices(filter: $filter) {
@@ -27,6 +13,21 @@ export const ALL_DEVICES_QUERY = gql`
         userID
         pin
       }
+    }
+  }
+`;
+
+export const CREATE_DEVICE_MUTATION = gql`
+  mutation Mutation($input: CreateDeviceInput!) {
+    create_device(input: $input) {
+      created_at
+      current_state
+      device_name
+      id
+      pin
+      protocol
+      updated_at
+      userID
     }
   }
 `;
@@ -60,5 +61,11 @@ export const UPDATE_DEVICE_MUTATION = gql`
       userID
       pin
     }
+  }
+`;
+
+export const DELETE_DEVICE_MUTATION = gql`
+  mutation Delete_device($input: DeleteDeviceInput!) {
+    delete_device(input: $input)
   }
 `;
