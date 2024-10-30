@@ -12,7 +12,7 @@ const useMQTTClient = () => {
   const [payload, setPayload] = useState<Payload | null>(null);
 
   const mqttConnect = () => {
-    const host = process.env.MQTT_BROKER || "ws://localhost:8883";
+    const host = process.env.MQTT_BROKER || "ws://51.79.251.117:8883";
     const mqttOptions: mqtt.IClientOptions = {
       clientId: "mqttjs_" + Math.random().toString(16).substr(2, 8),
       username: process.env.MQTT_USERNAME || "thuhuong",

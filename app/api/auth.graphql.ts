@@ -57,3 +57,11 @@ export const REFRESH_TOKEN_MUTATION = gql`
     }
   }
 `;
+
+export const LOGOUT_MUTATION = gql`
+  mutation Logout($params: LogoutInput!) {
+    logout(params: $params) {
+      message
+    }
+  }
+`;

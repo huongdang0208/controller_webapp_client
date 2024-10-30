@@ -5,11 +5,13 @@ export default function Notification({
   msg,
   duration,
   status,
+  onClose
 }: {
   isOpen: boolean;
   msg: string;
   duration: number | null;
   status: string;
+  onClose: () => void;
 }) {
   return (
     <div>
@@ -18,7 +20,11 @@ export default function Notification({
         autoHideDuration={duration || 6000}
         message={msg}
         color={status == "success" ? "success" : "error"}
-        // onClose={() => {}}
+        onClose={onClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
       />
     </div>
   );

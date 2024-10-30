@@ -24,15 +24,17 @@ export default function DeviceCard({
   device,
   mqttClient,
   setDeletedDevice,
+  setSelectedDevice,
 }: {
   device: Device;
   mqttClient: mqtt.MqttClient | null;
   setDeletedDevice: React.Dispatch<React.SetStateAction<number | null>>;
+  setSelectedDevice: React.Dispatch<React.SetStateAction<Device | null>>;
 }) {
   const [updateDeviceMutation, { error }] = useMutation(UPDATE_DEVICE_MUTATION);
   const [deleteDeviceMutation] = useMutation(DELETE_DEVICE_MUTATION);
   const [checked, setChecked] = React.useState(device.current_state == 1);
-  const [noti, setNoti] = React.useState<string>();
+  const [noti, setNoti] = React.useState<string | null>();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -52,50 +54,54 @@ export default function DeviceCard({
     setAnchorEl(null);
   };
 
-  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeStatus = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setChecked(event.target.checked);
-    try {
-      if (device?.protocol === "MQTT") {
-        const topic = `hub/switches`;
-        const message = `${checked ? "turn off" : "turn on"} - [state: ${
-          checked ? 0 : 1
-        }
-        id: ${device.id}
-        name: "${device.device_name}"
-        ]`;
-        mqttClient?.publish(topic, message);
-      } else {
-        const topic = `hub/lights`;
-        const message = `${checked ? "turn off" : "turn on"} - [state: ${
-          checked ? 0 : 1
-        }
-        id: ${device.id}
-        name: "${device.device_name}"
-        ]`;
-        mqttClient?.publish(topic, message);
-      }
-      const res = await updateDeviceMutation({
-        variables: {
-          input: {
-            id: device.id,
-            current_state: event.target.checked ? 1 : 0,
+    if (device.current_state !== (event.target.checked ? 1 : 0)) {
+      try {
+        const res = await updateDeviceMutation({
+          variables: {
+            input: {
+              id: device.id,
+              current_state: event.target.checked ? 1 : 0,
+            },
           },
-        },
-      });
-      if (res.data) {
-        setNoti("Update successful!");
-      } else {
-        setNoti("Update failed!" + (error?.message || ""));
+        });
+        if (res.data) {
+          if (device?.protocol === "MQTT") {
+            const topic = `hub/switches`;
+            const message = `${checked ? "turn off" : "turn on"} - [state: ${
+              checked ? 0 : 1
+            }
+            id: ${device.id}
+            name: "${device.device_name}"
+            ]`;
+            mqttClient?.publish(topic, message);
+          } else {
+            const topic = `hub/lights`;
+            const message = `${checked ? "turn off" : "turn on"} - [state: ${
+              checked ? 0 : 1
+            }
+            id: ${device.id}
+            name: "${device.device_name}"
+            ]`;
+            mqttClient?.publish(topic, message);
+          }
+          setNoti("Update successful!");
+        } else {
+          setNoti("Update failed!" + (error?.message || ""));
+        }
+      } catch (error) {
+        setNoti("Update failed!" + error);
       }
-    } catch (error) {
-      setNoti("Update failed!" + error);
     }
   };
 
   const handleDeleteDevice = async () => {
     try {
       const topic = `hub/devices`;
-      const message = `delete - [id: ${device.id}, protocol: ${device.protocol}]`;
+      const message = `delete - [id: ${device.id}, protocol: ${device.protocol}, name: ${device.device_name}]`;
       mqttClient?.publish(topic, message);
       const res = await deleteDeviceMutation({
         variables: {
@@ -115,8 +121,16 @@ export default function DeviceCard({
     }
   };
 
+  const handleChangeSelectedDevice = () => {
+    setSelectedDevice(device);
+  };
+
   return (
-    <Card variant="outlined" sx={{ height: "100%", flexGrow: 1 }}>
+    <Card
+      variant="outlined"
+      sx={{ height: "100%", flexGrow: 1, cursor: "pointer" }}
+      onClick={handleChangeSelectedDevice}
+    >
       <CardHeader
         action={
           <IconButton
@@ -152,15 +166,16 @@ export default function DeviceCard({
             </Stack>
             <Switch
               checked={checked}
-              onChange={handleChange}
+              onChange={handleChangeStatus}
               inputProps={{ "aria-label": "controlled" }}
             />
           </Stack>
           <Notification
-            isOpen={noti ? true : false}
+            isOpen={!!noti}
             msg={noti || ""}
-            duration={200}
-            status={noti == "Update successful!" ? "success" : "error"}
+            duration={2000}
+            status={noti === "Update successful!" ? "success" : "error"}
+            onClose={() => setNoti(null)}
           />
         </Stack>
       </CardContent>

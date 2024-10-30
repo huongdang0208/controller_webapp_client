@@ -14,9 +14,7 @@ import MainGrid from "../components/main-grid/main-grid";
 import SideMenu from "../components/side-menu/side-menu";
 import AppTheme from "../components/theme/app-theme";
 import {
-  // chartsCustomizations,
   dataGridCustomizations,
-  // treeViewCustomizations,
 } from "./custom/data-grid";
 import { useMutation, useQuery } from "@apollo/client";
 import { datePickersCustomizations } from "./custom/date-picker";
@@ -31,18 +29,19 @@ import {
 import { Device, DeviceQueryInput } from "../utils/interfaces/device.interface";
 import Notification from "../components/notification/notification";
 import useMQTTClient from "../lib/mqtt/useMQTTClient";
+import Analytics from "./analytics/analytics";
+import Timer from "./timer/timer";
 
 const xThemeComponents = {
-  // ...chartsCustomizations,
   ...dataGridCustomizations,
   ...datePickersCustomizations,
-  // ...treeViewCustomizations,
 };
 
 export default function Dashboard() {
   const router = useRouter();
   const authState = useAppSelector((state) => state.auth);
   const { client, connectStatus, payload, mqttConnect } = useMQTTClient();
+  const [url, setUrl] = React.useState<string>("");
   const [createManyDevicesMutation] = useMutation(CREATE_MANY_DEVICES_MUTATION);
   const { error, data, refetch } = useQuery(ALL_DEVICES_QUERY, {
     variables: {
@@ -55,7 +54,7 @@ export default function Dashboard() {
   const [listDevices, setListDevices] = React.useState<Device[]>(
     data?.all_devices.items
   );
-  const devices = [
+  const initialDevicesList = [
     {
       userID: authState.user?.id ? authState.user.id : 0,
       device_name: "Light 1",
@@ -127,32 +126,38 @@ export default function Dashboard() {
     const idMatch = dataPart.match(/id:\s*(\d+)/);
     const id = idMatch ? parseInt(idMatch[1], 10) : null;
     if (id) {
-      try {
-        const res = await updateDeviceMutation({
-          variables: {
-            input: {
-              id,
-              current_state: action === "turn on" ? 1 : 0,
-            },
-          },
-        });
-        if (res.data) {
-          setListDevices((prev) => {
-            const updatedDevices = prev.map((device) =>
-              device.id === id
-                ? { ...device, current_state: action === "turn on" ? 1 : 0 }
-                : device
-            );
-            return [...updatedDevices]; // Ensure a new array reference
-          });
-          refetch({
-            filter: {
-              userID: authState.user?.id,
+      const deviceToUpdate = listDevices.find((device) => device.id === id);
+      console.log(
+        deviceToUpdate?.current_state !== (action == "turn on" ? 1 : 0)
+      );
+      if (deviceToUpdate?.current_state !== (action == "turn on" ? 1 : 0)) {
+        try {
+          const res = await updateDeviceMutation({
+            variables: {
+              input: {
+                id,
+                current_state: action === "turn on" ? 1 : 0,
+              },
             },
           });
+          if (res.data) {
+            setListDevices((prev) => {
+              const updatedDevices = prev.map((device) =>
+                device.id === id
+                  ? { ...device, current_state: action === "turn on" ? 1 : 0 }
+                  : device
+              );
+              return [...updatedDevices]; // Ensure a new array reference
+            });
+            refetch({
+              filter: {
+                userID: authState.user?.id,
+              },
+            });
+          }
+        } catch (error) {
+          throw new Error(String(error));
         }
-      } catch (error) {
-        throw new Error(String(error));
       }
     }
   };
@@ -184,7 +189,7 @@ export default function Dashboard() {
     if (!authState.user) {
       router.push("/sign-in");
     } else if (data?.all_devices.items.length === 0) {
-      createDevicesHandler(devices);
+      createDevicesHandler(initialDevicesList);
     }
   }, [router, authState.user, data]);
 
@@ -196,8 +201,8 @@ export default function Dashboard() {
     <AppTheme themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: "flex" }}>
-        <SideMenu user={authState.user as User} />
-        <AppNavbar />
+        <SideMenu user={authState.user as User} setUrl={setUrl} />
+        <AppNavbar setUrl={setUrl} />
         {/* Main content */}
         <Box
           component="main"
@@ -217,7 +222,15 @@ export default function Dashboard() {
             }}
           >
             <Header />
-            <MainGrid listDevices={listDevices} setListDevices={setListDevices} mqttClient={client} />
+            {url === "/dashboard" && (
+              <MainGrid
+                listDevices={listDevices}
+                setListDevices={setListDevices}
+                mqttClient={client}
+              />
+            )}
+            {url === "/dashboard/analytics" && <Analytics listDevices={listDevices} />}
+            {url === "/dashboard/timer" && <Timer listDevices={listDevices} userID={authState?.user?.id} mqttClient={client} />}
           </Stack>
         </Box>
       </Box>
@@ -226,6 +239,7 @@ export default function Dashboard() {
         msg={error ? JSON.stringify(error) : ""}
         status={error ? "error" : "success"}
         duration={3000}
+        onClose={() => {}}
       />
     </AppTheme>
   );

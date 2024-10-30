@@ -1,9 +1,6 @@
 import * as React from "react";
 import mqtt from "mqtt";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -20,7 +17,7 @@ import { CREATE_DEVICE_MUTATION } from "@/app/api/device.graphql";
 import { useAppSelector } from "@/app/lib/redux/store";
 import { Device } from "@/app/utils/interfaces/device.interface";
 
-export default function HighlightedCard({
+export default function AddDevice({
   listDevices,
   setListDevices,
   mqttClient,
@@ -74,7 +71,7 @@ export default function HighlightedCard({
         setListDevices([...listDevices, res.data.create_device]);
         handleClose();
         const topic = `hub/devices`;
-        const message = `add - [id: ${res.data.create_device.id}, protocol: ${res.data.create_device.protocol}]`;
+        const message = `add - [id: ${res.data.create_device.id}, protocol: ${res.data.create_device.protocol}, name: ${res.data.create_device.device_name}]`;
         mqttClient?.publish(topic, message);
       }
       if (error) {
@@ -86,67 +83,69 @@ export default function HighlightedCard({
   };
 
   return (
-    <Card sx={{ height: "100%" }}>
-      <CardContent>
-        <Typography
-          component="h2"
-          variant="subtitle2"
-          gutterBottom
-          sx={{ fontWeight: "600" }}
-        >
-          Add more devices
-        </Typography>
-        <Button
-          variant="contained"
-          size="small"
-          color="primary"
-          endIcon={<AddIcon />}
-          fullWidth={isSmallScreen}
-          onClick={handleClickOpen}
-        >
-          Add device
-        </Button>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          sx={{ width: "100%", minWidth: "700px", margin: "auto" }}
-        >
-          <DialogTitle id="alert-dialog-title">{"Add new device"}</DialogTitle>
-          <DialogContent>
-            <FormControl fullWidth margin="normal">
-              <InputLabel htmlFor="device-name">Device name</InputLabel>
-              <Input
-                id="device-name"
-                value={deviceName}
-                onChange={handleChangeDeviceName}
-                aria-describedby="device-name-helper"
-              />
-            </FormControl>
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="protocol-select-label">Protocol</InputLabel>
-              <Select
-                labelId="protocol-select-label"
-                id="protocol-select"
-                value={protocol}
-                label="Protocol"
-                onChange={handleChangeProtocol}
-              >
-                <MenuItem value={"BLE"}>Bluetooth</MenuItem>
-                <MenuItem value={"MQTT"}>MQTT</MenuItem>
-                <MenuItem value={"ZIGBEE"}>Zigbee</MenuItem>
-              </Select>
-            </FormControl>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleCreateDevice} autoFocus>
-              Create
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </CardContent>
-    </Card>
+    // <Card sx={{ height: "100%" }}>
+    // <CardContent>
+    <>
+      {/* <Typography
+        component="h2"
+        variant="subtitle2"
+        gutterBottom
+        sx={{ fontWeight: "600" }}
+      >
+        Add more devices
+      </Typography> */}
+      <Button
+        variant="contained"
+        size="small"
+        color="primary"
+        endIcon={<AddIcon />}
+        fullWidth={isSmallScreen}
+        onClick={handleClickOpen}
+      >
+        Add device
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        sx={{ width: "100%", minWidth: "700px", margin: "auto" }}
+      >
+        <DialogTitle id="alert-dialog-title">{"Add new device"}</DialogTitle>
+        <DialogContent>
+          <FormControl fullWidth margin="normal">
+            <InputLabel htmlFor="device-name">Device name</InputLabel>
+            <Input
+              id="device-name"
+              value={deviceName}
+              onChange={handleChangeDeviceName}
+              aria-describedby="device-name-helper"
+            />
+          </FormControl>
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="protocol-select-label">Protocol</InputLabel>
+            <Select
+              labelId="protocol-select-label"
+              id="protocol-select"
+              value={protocol}
+              label="Protocol"
+              onChange={handleChangeProtocol}
+            >
+              <MenuItem value={"BLE"}>Bluetooth</MenuItem>
+              <MenuItem value={"MQTT"}>MQTT</MenuItem>
+              <MenuItem value={"ZIGBEE"}>Zigbee</MenuItem>
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleCreateDevice} autoFocus>
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+    //   </CardContent>
+    // </Card>
   );
 }

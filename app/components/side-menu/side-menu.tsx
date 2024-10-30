@@ -8,7 +8,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import SelectContent from "../select-content";
 import MenuContent from "../menu-content";
-import CardAlert from "../card-alert";
+// import CardAlert from "../card-alert";
 import OptionsMenu from "../options-menu";
 import { User } from "@/app/utils/interfaces/user.interface";
 
@@ -25,7 +25,7 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
-export default function SideMenu({ user }: { user: User }) {
+export default function SideMenu({ user, setUrl }: { user: User, setUrl: React.Dispatch<React.SetStateAction<string>> }) {
   return (
     <Drawer
       variant="permanent"
@@ -46,8 +46,8 @@ export default function SideMenu({ user }: { user: User }) {
         <SelectContent />
       </Box>
       <Divider />
-      <MenuContent />
-      <CardAlert />
+      <MenuContent setUrl={setUrl} />
+      {/* <CardAlert /> */}
       <Stack
         direction="row"
         sx={{
@@ -60,7 +60,7 @@ export default function SideMenu({ user }: { user: User }) {
       >
         <Avatar
           sizes="small"
-          alt="Riley Carter"
+          alt={user.username}
           src="/static/images/avatar/7.jpg"
           sx={{ width: 36, height: 36 }}
         />
