@@ -6,6 +6,7 @@ import { useAppSelector } from "../../lib/redux/store";
 
 const httpLink = createHttpLink({
   uri: "http://51.79.251.117:8080/graphql",
+  credentials: 'include', // Send cookies with requests
 });
 
 export const ApolloClientProvider = ({
