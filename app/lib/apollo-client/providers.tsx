@@ -5,7 +5,7 @@ import { setContext } from '@apollo/client/link/context';
 import { useAppSelector } from "../../lib/redux/store";
 
 const httpLink = createHttpLink({
-  uri: "http://51.79.251.117:8080/graphql",
+  uri: "https://btabc.dhpgo.com/graphql",
 });
 
 export const ApolloClientProvider = ({
@@ -25,7 +25,7 @@ export const ApolloClientProvider = ({
   });
 
   const client = new ApolloClient({
-    uri: "http://51.79.251.117:8080/graphql",
+    uri: "https://btabc.dhpgo.com/graphql",
     cache: new InMemoryCache(),
     link: authLink.concat(httpLink),
     ssrMode: true,
