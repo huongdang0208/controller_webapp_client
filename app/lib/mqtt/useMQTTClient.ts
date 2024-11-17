@@ -12,7 +12,7 @@ const useMQTTClient = () => {
   const [payload, setPayload] = useState<Payload | null>(null);
 
   const mqttConnect = () => {
-    const host = process.env.MQTT_BROKER || "wss://btabc.dhpgo.com:8883";
+    const host = process.env.MQTT_BROKER || "wss://gdd851ff.ala.asia-southeast1.emqxsl.com:8084/mqtt";
     const mqttOptions: mqtt.IClientOptions = {
       clientId: "mqttjs_" + Math.random().toString(16).substr(2, 8),
       username: process.env.MQTT_USERNAME || "thuhuong",
