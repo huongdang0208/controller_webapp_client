@@ -110,21 +110,17 @@ export default function Timer({
         const device: Device = res.data?.update_device;
         if (device?.protocol === "MQTT") {
           const topic = `hub/switches`;
-          const message = `${
-            activeTimer?.action === "OFF" ? "turn off" : "turn on"
-          } - [state: ${activeTimer?.action === "OFF" ? 0 : 1}
-          id: ${device.id}
-          name: "${device.device_name}"
-          ]`;
+          const message = `${activeTimer?.action === "OFF" ? "turn off" : "turn on"} - [id: ${device.id}, state: ${activeTimer?.action === "OFF"? 0 : 1}, name: ${device.device_name}]`;
           mqttClient?.publish(topic, message);
         } else {
           const topic = `hub/lights`;
-          const message = `${
-            activeTimer?.action === "OFF" ? "turn off" : "turn on"
-          } - [state: ${activeTimer?.action === "OFF" ? 0 : 1}
-          id: ${device.id}
-          name: "${device.device_name}"
-          ]`;
+          const message = `${activeTimer?.action === "OFF" ? "turn off" : "turn on"} - [id: ${device.id}, state: ${activeTimer?.action === "OFF"? 0 : 1}, name: ${device.device_name}]`;
+          // const message = `${
+          //   activeTimer?.action === "OFF" ? "turn off" : "turn on"
+          // } - [state: ${activeTimer?.action === "OFF" ? 0 : 1}
+          // id: ${device.id}
+          // name: "${device.device_name}"
+          // ]`;
           mqttClient?.publish(topic, message);
         }
         const data = await updateTimerMutation({

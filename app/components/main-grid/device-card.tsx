@@ -71,21 +71,23 @@ export default function DeviceCard({
         if (res.data) {
           if (device?.protocol === "MQTT") {
             const topic = `hub/switches`;
-            const message = `${checked ? "turn off" : "turn on"} - [state: ${
-              checked ? 0 : 1
-            }
-            id: ${device.id}
-            name: "${device.device_name}"
-            ]`;
+            const message = `${checked ? "turn off" : "turn on"} - [id: ${device.id}, state: ${checked? 0: 1}, name: ${device.device_name}]`;
+            // const message = `${checked ? "turn off" : "turn on"} - [state: ${
+            //   checked ? 0 : 1
+            // }
+            // id: ${device.id}
+            // name: "${device.device_name}"
+            // ]`;
             mqttClient?.publish(topic, message);
           } else {
             const topic = `hub/lights`;
-            const message = `${checked ? "turn off" : "turn on"} - [state: ${
-              checked ? 0 : 1
-            }
-            id: ${device.id}
-            name: "${device.device_name}"
-            ]`;
+            const message = `${checked ? "turn off" : "turn on"} - [id: ${device.id}, state: ${checked? 0 : 1}, name: ${device.device_name}]`;
+            // const message = `${checked ? "turn off" : "turn on"} - [state: ${
+            //   checke? 0 : 1d
+            // }
+            // id: ${device.id}
+            // name: "${device.device_name}"
+            // ]`;
             mqttClient?.publish(topic, message);
           }
           setNoti("Update successful!");

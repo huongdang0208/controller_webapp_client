@@ -12,12 +12,12 @@ const useMQTTClient = () => {
   const [payload, setPayload] = useState<Payload | null>(null);
 
   const mqttConnect = () => {
-    const host = process.env.MQTT_BROKER || "wss://gdd851ff.ala.asia-southeast1.emqxsl.com:8084/mqtt";
+    const host = process.env.MQTT_BROKER || "ws://51.79.251.117:8883";
     const mqttOptions: mqtt.IClientOptions = {
       clientId: "mqttjs_" + Math.random().toString(16).substr(2, 8),
       username: process.env.MQTT_USERNAME || "thuhuong",
       password: process.env.MQTT_PASSWORD || "thuhuong",
-      protocol: 'wss'
+      // protocol: 'ws'
     };
     setConnectStatus("connecting");
     setClient(mqtt.connect(host, mqttOptions));
